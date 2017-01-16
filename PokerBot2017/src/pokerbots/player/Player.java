@@ -31,6 +31,7 @@ public class Player {
 	
 	public void run() {
 		String input;
+		Handler handler = new Handler();
 		try {
 			// Block until engine sends us a packet; read it into input.
 			while ((input = inStream.readLine()) != null) {
@@ -47,6 +48,8 @@ public class Player {
 					// The engine will ignore all spurious packets you send.
 					// The engine will also check/fold for you if you return an
 					// illegal action.
+					
+					// Parse inputs
 					int potSize = Integer.parseInt(words[1]);
 					int numBoardCards = Integer.parseInt(words[2]);
 					int numLastActions = Integer.parseInt(words[numBoardCards + 3]);
@@ -69,7 +72,9 @@ public class Player {
 						legalActions.add(words[i + numBoardCards + numLastActions + 6]);
 					}
 					
-					outStream.println("CHECK");
+					// Send inputs to handler and get returned action
+					String finalAction = handler.handleGetAction(potSize, boardCards, lastActions, legalActions, timeBank);
+					outStream.println(finalAction);
 				}
 				else if ("REQUESTKEYVALUES".compareToIgnoreCase(word) == 0) {
 					// At the end, engine will allow bot to send key/value pairs to store.
@@ -103,12 +108,14 @@ public class Player {
 					int handID = Integer.parseInt(words[1]);
 					boolean button = Boolean.parseBoolean(words[2]);
 					Set<Card> holeCards = new HashSet<>();
-					for(int i = 3; i < 7; i++) {
+					for(int i = 3; i < 5; i++) {
 						holeCards.add(new Card(words[i]));
 					}
-					int myBank = Integer.parseInt(words[7]);
-					int oppBank = Integer.parseInt(words[8]);
-					double timeBank = Double.parseDouble(words[9]);
+					int myBank = Integer.parseInt(words[5]);
+					int oppBank = Integer.parseInt(words[6]);
+					double timeBank = Double.parseDouble(words[7]);
+					
+					handler.handleNewHand(handID, button, holeCards, timeBank);
 				}
 				else if("NEWGAME".compareToIgnoreCase(word) == 0) {
 					String myName = words[1];
@@ -117,6 +124,8 @@ public class Player {
 					int bigBlind = Integer.parseInt(words[4]);
 					int numHands = Integer.parseInt(words[5]);
 					double timeBank = Double.parseDouble(words[6]);
+					
+					handler.handleNewGame(myName, oppName, stackSize, bigBlind, numHands, timeBank);
 				}
 				//TODO: NEWGAME yourName oppName stackSize bb numHands timeBank
 				//		KEYVALUE key value
