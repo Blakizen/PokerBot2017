@@ -61,15 +61,15 @@ public class Player {
 					List<String> legalActions = new ArrayList<>();
 					
 					for(int i = 0; i < Integer.parseInt(words[2]); i++) {
-						boardCards.add(new Card(words[i + 4]));
+						boardCards.add(new Card(words[i + 3]));
 					}
 					
 					for(int i = 0; i < numLastActions; i++) {
-						lastActions.add(words[i + numBoardCards + 5]);
+						lastActions.add(words[i + numBoardCards + 4]);
 					}
 					
 					for(int i = 0; i < numLegalActions; i++) {
-						legalActions.add(words[i + numBoardCards + numLastActions + 6]);
+						legalActions.add(words[i + numBoardCards + numLastActions + 5]);
 					}
 					
 					// Send inputs to handler and get returned action
@@ -96,7 +96,7 @@ public class Player {
 					List<String> lastActions = new ArrayList<>();
 					double timeBank = Double.parseDouble(words[5 + numBoardCards + numLastActions]);
 					
-					for(int i = 0; i < Integer.parseInt(words[2]); i++) {
+					for(int i = 0; i < numBoardCards; i++) {
 						boardCards.add(new Card(words[i + 4]));
 					}
 					
@@ -107,7 +107,7 @@ public class Player {
 				else if("NEWHAND".compareToIgnoreCase(word) == 0) {
 					int handID = Integer.parseInt(words[1]);
 					boolean button = Boolean.parseBoolean(words[2]);
-					Set<Card> holeCards = new HashSet<>();
+					List<Card> holeCards = new ArrayList<>();
 					for(int i = 3; i < 5; i++) {
 						holeCards.add(new Card(words[i]));
 					}
